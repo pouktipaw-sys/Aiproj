@@ -50,8 +50,8 @@ class ScanReport:
 def redact(value: str) -> str:
     """Redact common secret-like assignments and cap values for readable reports."""
     value = re.sub(
-        r"(?i)(authorization|cookie|set-cookie|api[_-]?key|access[_-]?token|token|secret|password)(\\s*[:=]\\s*)[^; ,&]+",
-        r"\\1\\2[REDACTED]",
+        r"(?i)(authorization|cookie|set-cookie|api[_-]?key|access[_-]?token|token|secret|password)(\s*[:=]\s*)[^; ,&]+",
+        r"\1\2[REDACTED]",
         value,
     )
     return value[:500]
@@ -70,7 +70,7 @@ def redact_url(url: str) -> str:
     netloc = host
     if parts.port is not None:
         netloc += f":{parts.port}"
-    return urlunsplit((parts.scheme, netloc, parts.path, urlencode(safe_query), parts.fragment))
+    return urlunsplit((parts.scheme, netloc, parts.path, urlencode(safe_query), ""))
 
 def inspect_headers(url: str, headers: dict[str, str], status: int | None, errors: list[str] | None = None) -> ScanReport:
     findings: list[Finding] = []

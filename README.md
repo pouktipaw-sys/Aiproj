@@ -1,59 +1,75 @@
 # WEB ATTACK SURFACE LAB
 
-A safety-first Python CLI for documenting a small slice of a web application's visible attack surface. Designed as a junior application-security learning project.
+*A small security project built to learn by doing, one careful step at a time.*
 
-## Safety by design
+I wanted a project that would help me understand how to look at a web application's exposed surface without pretending that a beginner's script can replace a real penetration test. So I kept the scope intentionally small: one URL, one ordinary HTTP request, a few response-header observations, and a report I can explain.
 
-- Loopback hosts only by default.
-- One explicitly supplied URL and one GET request per run.
-- Explicit hostname allowlist required for any non-loopback target.
-- Redirects are not followed; no crawling, exploitation, brute force or form submission.
-- Bounded request timeout and sanitized response-header values.
-- Offline synthetic demo for portfolio walkthroughs.
+The goal is not to produce a scary number of findings. It is to make the process understandable, repeatable, and safe.
 
-Only assess systems you own or have explicit written permission to test. An allowlist is a technical boundary, not proof of authorization.
+## What it does
 
-## Quick start
+- Checks the requested URL against an explicit scope before making a request.
+- Allows loopback addresses by default; other hosts need an explicit allowlist entry.
+- Makes one GET request and does not follow redirects or read the response body.
+- Looks for a small set of common security headers and notes when the URL uses HTTP.
+- Redacts common secret-like header values and sensitive query parameters in the report.
+- Exports JSON and Markdown reports.
+- Includes an offline demo, unit tests, and a GitHub Actions workflow.
+
+## Try the offline demo first
+
+You do not need a target website or a running lab to see how the tool works.
 
 Requires Python 3.11 or newer.
 
-    python -m venv .venv
-    python -m pip install -e ".[dev]"
-    python -m web_attack_surface_lab --help
-    python -m web_attack_surface_lab demo --output reports/demo
-    python -m pytest -q
+```bash
+python -m venv .venv
+python -m pip install -e ".[dev]"
+python -m web_attack_surface_lab --help
+python -m web_attack_surface_lab demo --output reports/demo
+python -m pytest -q
+```
 
-On Windows PowerShell, activate the virtual environment with .venv\Scripts\Activate.ps1 before installing.
+On Windows PowerShell, activate the environment with `.venv\\Scripts\\Activate.ps1` before installing.
 
-## Local-only scan
+The demo is synthetic: it does not contact the internet. Open `reports/demo/report.md` to read the report, or `reports/demo/report.json` to see the structured data.
 
-Run a local application you control, then:
+## Try a local application you control
 
-    python -m web_attack_surface_lab scan http://127.0.0.1:8000/ --output reports/local
+Start a local web application on your own machine, then run:
 
-For a non-loopback hostname, add an explicit allowlist entry only when authorized:
+```bash
+python -m web_attack_surface_lab scan http://127.0.0.1:8000/ --output reports/local
+```
 
-    python -m web_attack_surface_lab scan https://demo.example/ --allow-host demo.example --output reports/demo-target
+For a non-loopback host, the hostname must be explicitly allowed. Only do this when you own the system or have written permission:
 
-The tool writes report.json and report.md. It does not follow redirects.
+```bash
+python -m web_attack_surface_lab scan https://lab.example/ --allow-host lab.example --output reports/lab
+```
 
-## Repository structure
+The allowlist is a technical boundary, not proof of authorization. The tool does not follow redirects, crawl pages, submit forms, or exploit anything.
 
-- src/web_attack_surface_lab/: CLI, scope validation, passive checks and report writers.
-- tests/: offline unit tests.
-- docs/PROJECT_JOURNEY.md: design decisions and learning plan.
-- docs/DEMO_GUIDE.md: short recruiter walkthrough.
-- fixtures/: guidance for synthetic data.
-- docker-compose.yml: optional local Juice Shop target bound to loopback only.
+## What the results mean (and do not mean)
 
-## Limitations
+A missing header is an observation worth reviewing, not automatically a vulnerability. Whether a header is appropriate depends on the application and how it is deployed. The report is a starting point for manual verification, not a verdict that a system is secure or insecure.
 
-This is not a full vulnerability scanner or a professional penetration test. Missing headers are observations, not proof of a vulnerability. Manually validate results and document limitations. Use the synthetic demo when you do not have written authorization to test a target.
+## Project map
 
-## Honest portfolio note
+- `src/web_attack_surface_lab/`: CLI, scope checks, passive observations, and report writers.
+- `tests/`: tests for scope validation, redaction, reporting, and the offline demo.
+- `docs/PROJECT_JOURNEY.md`: why I made these design choices and what I want to learn next.
+- `docs/DEMO_GUIDE.md`: a short walkthrough for someone reviewing the project.
+- `docker-compose.yml`: optional OWASP Juice Shop lab bound to loopback.
 
-Only claim tests you have personally run or that the CI workflow has actually passed. Do not claim a live target was tested unless you tested it with authorization.
+## A note about learning
+
+This is a learning project, not a certified scanner and not a professional penetration test. I am using it to practise writing Python, thinking about scope, handling data carefully, and explaining technical decisions clearly. I will only describe tests I have actually run, and I will not claim to have assessed a live target unless I had authorization and did the work.
+
+## Safety
+
+Only test systems you own or have explicit written permission to assess. If you are unsure whether a test is authorized, use the offline demo instead.
 
 ## License
 
-MIT. See LICENSE.
+MIT. See [LICENSE](LICENSE).

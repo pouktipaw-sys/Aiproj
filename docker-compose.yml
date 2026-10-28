@@ -1,0 +1,7 @@
+# Optional local training target; keep it bound to loopback only.
+services:
+  juice-shop:
+    image: bkimminich/juice-shop:latest
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: "no"

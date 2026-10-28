@@ -1,19 +1,5 @@
-# Web Attack Surface Lab
+# WEB ATTACK SURFACE LAB
 
-A reproducible web security assessment learning project for explicitly authorized local labs.
+Safety-first Python CLI for documenting a web application's visible attack surface. Loopback-only by default; explicit authorization required for any other host. Passive checks only, bounded requests, no crawling or exploitation.
 
-This repository is being built as a portfolio project for a Junior Pentester application.
-
-## Planned structure
-- src/web_attack_surface_lab/
-- tests/
-- docs/
-- fixtures/
-- reports/
-
-## Current status
-- Repository initialized.
-- Documentation scaffold created.
-- Next commits will add the CLI, scope validation, HTTP checks, reporting engine, Docker lab, and automated tests.
-
-> This project will only support authorized local laboratory targets by default and will not claim exploit validation where it has not been performed.
+See the project plan in the repository as files are added.

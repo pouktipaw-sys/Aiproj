@@ -35,7 +35,7 @@ class ScanReport:
     scope_note: str = "One URL, one GET request, no redirects, no crawling, no exploitation."
 
 def redact(value: str) -> str:
-    value = re.sub(r"(?i)(authorization|cookie|set-cookie|api[_-]?key|token|secret)(\\s*[:=]\\s*)[^; ,]+", r"\\1\\2[REDACTED]", value)
+    value = re.sub(r"(?i)(authorization|cookie|set-cookie|api[_-]?key|token|secret)(\s*[:=]\s*)[^; ,]+", r"\1\2[REDACTED]", value)
     return value[:500]
 
 def inspect_headers(url: str, headers: dict[str, str], status: int | None, errors: list[str] | None = None) -> ScanReport:
